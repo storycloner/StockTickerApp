@@ -16,6 +16,7 @@ class MenuBarManager: NSObject {
     }
     private var currentTickerIndex = 0
     private var isMarqueeMode = false
+    private var isCompactMode = false
     // Cache the full colored string to avoid rebuilding it every frame
     private var marqueeDetails: (text: NSAttributedString, offset: Int) = (NSAttributedString(), 0)
     private var marqueeTimer: Timer?
@@ -42,6 +43,7 @@ class MenuBarManager: NSObject {
         
         // Load settings
         isMarqueeMode = UserDefaults.standard.bool(forKey: "isMarqueeMode")
+        isCompactMode = UserDefaults.standard.bool(forKey: "isCompactMode")
         
         setupMenu() // Initial setup
         startFetching()
@@ -63,6 +65,10 @@ class MenuBarManager: NSObject {
         let marqueeItem = NSMenuItem(title: "Marquee Mode", action: #selector(toggleMarqueeMode), keyEquivalent: "m", target: self)
         marqueeItem.state = isMarqueeMode ? .on : .off
         menu.addItem(marqueeItem)
+        
+        let compactItem = NSMenuItem(title: "Compact Mode (Hide Change)", action: #selector(toggleCompactMode), keyEquivalent: "c", target: self)
+        compactItem.state = isCompactMode ? .on : .off
+        menu.addItem(compactItem)
         
         menu.addItem(NSMenuItem.separator())
         
@@ -130,7 +136,12 @@ class MenuBarManager: NSObject {
                 let arrow = data.change >= 0 ? "▲" : "▼"
                 let priceStr = data.price.formatted(.number.precision(.fractionLength(2)))
                 let changeStr = abs(data.change).formatted(.number.precision(.fractionLength(2)))
-                let text = "\(ticker) \(priceStr) \(arrow)\(changeStr)"
+                let text: String
+                if isCompactMode {
+                    text = "\(ticker) \(priceStr)"
+                } else {
+                    text = "\(ticker) \(priceStr) \(arrow)\(changeStr)"
+                }
                 
                 let color = data.change >= 0 ? NSColor.systemGreen : NSColor.systemRed
                 // Use monospaced font for stability
@@ -225,7 +236,15 @@ class MenuBarManager: NSObject {
         
         let arrow = data.change >= 0 ? "▲" : "▼"
         let formattedChange = String(format: "%.2f", abs(data.change))
-        let displayString = "\(symbol) \(data.price.formatted(.number.precision(.fractionLength(2)))) \(arrow)\(formattedChange)"
+        var displayString = ""
+        
+        if isCompactMode {
+            // Compact: "AAPL 150.00"
+            displayString = "\(symbol) \(data.price.formatted(.number.precision(.fractionLength(2))))"
+        } else {
+             // Normal: "AAPL 150.00 ▲2.50"
+             displayString = "\(symbol) \(data.price.formatted(.number.precision(.fractionLength(2)))) \(arrow)\(formattedChange)"
+        }
         
         button.title = displayString
         
@@ -377,6 +396,19 @@ class MenuBarManager: NSObject {
         startTimers()
         
         // Rebuild menu to show checkbox state
+        setupMenu()
+    }
+    
+    @objc func toggleCompactMode() {
+        isCompactMode.toggle()
+        UserDefaults.standard.set(isCompactMode, forKey: "isCompactMode")
+        
+        // Force update immediately
+        if isMarqueeMode {
+            marqueeDetails.text = buildMarqueeString() // Rebuild string without change
+        } else {
+            updateDisplay()
+        }
         setupMenu()
     }
     
