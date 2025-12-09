@@ -78,7 +78,7 @@ class MenuBarManager: NSObject {
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Refresh Now", action: #selector(refreshClicked), keyEquivalent: "r", target: self))
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Quit (v1.3)", action: #selector(quitClicked), keyEquivalent: "q", target: self))
+        menu.addItem(NSMenuItem(title: "Quit (v1.4)", action: #selector(quitClicked), keyEquivalent: "q", target: self))
         
         statusItem.menu = menu
     }

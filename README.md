@@ -51,5 +51,18 @@ Built with Swift 5.7+ and AppKit.
 swift build -c release
 ```
 
+## Troubleshooting
+
+### "App is damaged and can't be opened"
+Because this app is not yet signed with an Apple Developer Certificate, macOS Gatekeeper will block it when downloaded from the internet.
+
+**To fix this:**
+1.  Open Terminal.
+2.  Run the following command (replace path with actual location):
+    ```bash
+    xattr -cr /Applications/StockTicker.app
+    ```
+3.  Open the app again.
+
 ## License
 MIT
