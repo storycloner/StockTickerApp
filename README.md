@@ -2,6 +2,9 @@
 
 A lightweight, native macOS menu bar application that displays real-time stock prices and indices.
 
+![alt text](https://github.com/storycloner/StockTickerApp/blob/main/Screen%20Shot%202025-12-09%20at%201.55.31%20AM.png)
+![alt text](https://github.com/storycloner/StockTickerApp/blob/main/Screen%20Shot%202025-12-09%20at%201.53.36%20AM.png)
+
 ## Features
 
 *   **Real-time Data**: Fetches live stock data using Yahoo Finance API.
