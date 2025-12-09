@@ -67,8 +67,11 @@ cat > "${APP_BUNDLE}/Contents/Info.plist" << EOF
 </plist>
 EOF
 
-# 5. Remove quarantine (optional, for local testing)
-# xattr -cr "${APP_BUNDLE}"
+# 5. Ad-hoc Sign (Required for Apple Silicon)
+# -s - means ad-hoc signing (no certificate needed, but valid for local run)
+# --force replaces existing signatures
+# --deep signs nested frameworks if any
+codesign --force --deep -s - "${APP_BUNDLE}"
 
 echo "Done! App is located at: ${APP_BUNDLE}"
 echo "You can zip this folder to share it."
