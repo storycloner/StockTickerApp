@@ -74,4 +74,12 @@ EOF
 codesign --force --deep -s - "${APP_BUNDLE}"
 
 echo "Done! App is located at: ${APP_BUNDLE}"
-echo "You can zip this folder to share it."
+
+# 6. Create Zip for Distribution (Preserves permissions/symlinks)
+echo "Creating Zip for GitHub..."
+pushd "${OUTPUT_DIR}" > /dev/null
+zip -yr "${APP_NAME}.zip" "${APP_NAME}.app"
+popd > /dev/null
+
+echo "Distributable Zip: ${OUTPUT_DIR}/${APP_NAME}.zip"
+echo "✅ UPLOAD THIS ZIP FILE TO GITHUB."
